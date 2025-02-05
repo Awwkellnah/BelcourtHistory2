@@ -1,0 +1,880 @@
+<style>
+    div.dt-buttons {
+        float: right;
+    }
+
+
+    #resize_wrapper label {
+        font-size: 16px;
+        color: black;
+        font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-weight: bold;
+    }
+
+
+    #resize_wrapper a {
+        font-size: 16px;
+        font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-weight: bold;
+    }
+
+
+    #resize_wrapper td {
+        font-size: 16px;
+        color: #1b1b1b;
+        font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif;
+    }
+
+
+    div.container {
+        margin: 0 auto;
+        /* max-width: 960px; */
+    }
+
+
+    .dataTables_length {
+        display: unset !important;
+        width: 100%;
+        padding-top: 10px;
+    }
+
+
+    .dataTables_wrapper .dataTables_paginate .next,
+    .dataTables_wrapper .dataTables_paginate .previous {
+        color: white !important;
+    }
+
+
+    .cta {
+        margin-bottom: unset !important;
+    }
+
+
+    label {
+        float: left;
+    }
+
+
+    li {
+        text-indent: 0rem !important;
+    }
+
+
+    table.dataTable tbody td {
+        vertical-align: top;
+    }
+
+
+    .usa-legend {
+
+
+        font-weight: bold !important;
+    }
+
+
+    .usa-fieldset {
+        border: 1px solid #c0c0c0;
+    }
+
+
+    /* thead {
+             position: absolute !important;
+             top: -9999px !important;
+             left: -9999px !important;
+    } */
+
+
+
+
+
+
+    .usa-table th:not(:first-child), .usa-table td:not(:first-child) {text-align:right !important}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    function loadjscssfile(filename, filetype, scriptId, callback) {
+        if (document.getElementById(scriptId) == null) {
+            if (filetype == "js") { //if filename is a external JavaScript file
+                var fileref = document.createElement('script')
+                fileref.setAttribute("type", "text/javascript")
+                fileref.setAttribute("src", filename)
+            }
+            else if (filetype == "css") { //if filename is an external CSS file
+                var fileref = document.createElement("link")
+                fileref.setAttribute("rel", "stylesheet")
+                fileref.setAttribute("type", "text/css")
+                fileref.setAttribute("href", filename)
+            }
+
+
+            // set the id so we can determine if the tag was loaded
+            fileref.setAttribute("id", scriptId)
+
+
+            if (typeof fileref != "undefined") {
+                document.getElementsByTagName("head")[0].appendChild(fileref)
+            }
+            if (callback) {
+                var newScript = document.querySelector('#' + scriptId);
+                newScript.addEventListener('load', function() {
+                    callback();
+                });
+            }          
+        } else {
+            if (callback != null)
+                callback();
+        }
+
+
+    }
+
+
+    var QA11501 = {};
+
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        (function ($, QA11501) {
+
+
+                   
+            const citation = "Internet citation: OJJDP Statistical Briefing Book. Online. Available: <a href='https://ojjdp.ojp.gov/statistical-briefing-book/victims/faqs/QA11501'>https://ojjdp.ojp.gov/statistical-briefing-book/victims/faqs/QA11501</a>. Released on August 30, 2021.";
+           
+            // const dataSource = "Data Source: U.S. Department of Health and Human Services, Administration on Children, Youth, and Families. Child Maltreatment 2020. Washington, D.C.: U.S. Government Printing Office.";
+           
+            let qaDataSource = "";
+            let dataSourceDynamic = "";
+
+
+            let footerNote = 'JAR is the juvenile arrest rate (per 100,000). ROR is the ratio of rates*.';
+
+
+            const additionalNotes = '** The "<strong>violent crimes</strong>" category includes the offenses of murder, robbery, and aggravated assault and is presented as an alternative to the Violent Crime Index, which is not available as a result of the change to the definition of rape in 2013. In any given year prior to the change in the rape definition, these three offenses accounted for more than 95% of arrests for Violent Crime Index offenses.<br>';
+            const additionalNotesExport = '** The "violent crimes" category includes the offenses of murder, robbery, and aggravated assault and is presented as an alternative to the Violent Crime Index, which is not available as a result of the change to the definition of rape in 2013. In any given year prior to the change in the rape definition, these three offenses accounted for more than 95% of arrests for Violent Crime Index offenses.';
+
+
+            const exportCitation = "Internet citation: OJJDP Statistical Briefing Book. Online. Available: https://ojjdp.ojp.gov/statistical-briefing-book/victims/faqs/QA11501. Released on August 30, 2021."; //This export has no markup on the url.
+
+
+            //const noteUnitedStates2008AndOn = "** Effective in 2010, national estimates for runaway arrests are no longer available.";
+           
+            let qaNotes = "";
+           
+            let qaTableNotes = "";
+            let question = "";
+            let qaAnswer = "";
+            let qaTableTitle = "";
+                       
+            var dtQA11501;
+            //let note = '';
+
+
+            QA11501.timePeriod = [];
+            QA11501.queryDisplayOption = [];
+
+
+            var url = (window.location != window.parent.location)
+                ? document.referrer
+                : document.location.href;
+
+
+            function getUrlVars() {
+                var vars = {};
+                var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+
+
+            function getUrlParam(parameter, defaultvalue) {
+                var urlparameter = defaultvalue;
+                if (url.indexOf(parameter) > -1) {
+                    urlparameter = getUrlVars()[parameter];
+                }
+                return urlparameter;
+            }
+
+
+            function emptyIfNull(val) {
+                if (val == undefined)
+                    val = ""
+                return val;
+            }          
+
+
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+
+            function round100(n) {
+                return -Math.round(-(n/100.0)) * 100  ;
+            }
+
+
+            function round10(n) {
+                return -Math.round(-(n/10.0)) * 10  ;
+            }
+
+
+            QA11501.updateParameter = function (chkBoxObject, chkParamArray) {
+                var value = chkBoxObject.value;
+                var isChecked = chkBoxObject.checked;
+                //alert(value + ", isChecked: " + isChecked);
+                if (isChecked)
+                    chkParamArray.push(value);
+                else {
+                    var index = chkParamArray.indexOf(value);
+                    if (index > -1) {
+                        chkParamArray.splice(index, 1);
+                    }
+                }
+            }
+
+
+            QA11501.buildStateSelectObject = function () {
+                $("#state").find('option').remove().end();  // empty
+                var url = "https://data.ojp.usdoj.gov/resource/f5bf-6h9h.json?$select=distinct state&$order=state";
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    async: true,
+                    data: {
+                        "$$app_token": "Xd0jQDzoPOATVFd2mXa3xe4LO"
+                    },
+                    success: function (data) {
+                        for (var i = 0, len = data.length; i < len; i++) {
+                            $("#state").append('<option value="' + data[i].state + '">' + data[i].state + '</option>');
+                        }
+
+
+
+
+                    }
+                });
+                //alert(queryYear);
+            }
+            ////////////////// GENERIC ARRAY FUNCTIONS //////////////////////
+            function buildDataArray(data) {
+                //var initkey = data[0].key;
+                let dataArray = [];
+                let myRow = [];
+                let totalRow = [];
+
+
+                for (i = 0; i < data.length; i++) {
+                    myRow.push( emptyIfNull(data[i].offense),
+                                emptyIfNull(data[i].allraces),
+                                emptyIfNull(data[i].white),
+                                emptyIfNull(data[i].minority),
+                                emptyIfNull(data[i].black),
+                                emptyIfNull(data[i].americanindian),
+                                emptyIfNull(data[i].asian),
+                                emptyIfNull(data[i].rorminority),
+                                emptyIfNull(data[i].rorblack),
+                                emptyIfNull(data[i].roramericanindian),
+                                emptyIfNull(data[i].rorasian)
+                               
+                    )
+                   
+                    dataArray.push(myRow);
+                    myRow = [];
+
+
+                }
+                if (data) {
+                    qaTableNotes = data[0].qatablenotes;
+                    qaNotes = data[0].qanotes;
+                    question = data[0].question;
+                    qaAnswer = data[0].qaanswer;
+                    qaDataSource = data[0].qadatasource;
+                    qaTableTitle = data[0].qatabletitle;
+                }
+
+
+               
+                return dataArray;
+            }
+
+
+            function colTotals(array) {
+                return array[array.length - 1];
+            }
+
+
+
+
+            function buildNotes(forExport) {
+                let notes = "";
+                let bodyNotes = "";
+                if ($("#year").val() == "2020") {
+                    bodyNotes = "<hr/><br/>" + qaNotes;
+                } else {
+                    bodyNotes = "";
+                }
+                if (forExport) {
+                    notes = qaTableNotes + "\r\n" + "\r\n"+ additionalNotesExport + "\r\n" + "\r\n" + qaNotes;
+                    notes = notes.replace(/<b>/g,'').replace(/<\/b>/g,'').replace(/<br>/g,'\r\n').replace(/<li>/g,'-').replace(/<\/li>/g,'\r\n').replace(/<LI>/g,'-').replace(/<\/LI>/g,'\r\n');
+                    return notes;
+                }
+                notes = qaTableNotes + "<br/><br/>" + additionalNotes + bodyNotes + "<br/>";
+                return notes;
+               
+            }
+
+
+            function buildDataSource(forExport){
+                let dataSourceDynamic = "";
+                if (forExport) {
+                    dataSourceDynamic = qaDataSource;
+                    dataSourceDynamic = dataSourceDynamic.replace(/<br>/g,'\r\n').replace(/<i>/g,'').replace(/<\/i>/g,'');
+                    return dataSourceDynamic;
+                }
+                dataSourceDynamic = qaDataSource;
+                return dataSourceDynamic;
+            }
+
+
+            function populateDataTable(qry, columns) {
+
+
+                $("#loaderGif").css("visibility", "visible");
+                $("#loaderGif").show();    
+                $("#dataTitle").css("visibility", "visible");
+
+
+                //let naArray = ["Rape","Sex offenses (other)","Violent Crime Index"];
+                // $("#dataTitle").show();      
+                initializeDataTablesSettings(columns);
+                // const displayOption = $('input[name="rbDisplay"]:checked').val();
+                //let allAgesObject = {'allAgesCountsDataArray': []}; // Used to calculate pctOfAdults and pctOfJuveniles
+                //let allAgesCountsDataArray;
+                //if (displayOption == 'pctOfAdults' || displayOption == 'pctOfJuveniles') {
+                //  getAllAgesCounts(queryCntAges, allAgesObject);
+                //}
+                getData(qry, 1000, 1000, function (data) {
+                    let dataArray = buildDataArray(data);
+                //  let colTotalArray = colTotals(dataArray);
+                    let arrCi = [];
+                    let retVal = String.empty;
+                    dataArray.forEach(row => dtQA11501.row.add(
+                        row.map(function(item, idx, arr) {
+                            if (isNaN(item)) {
+                                // if (arr[0] == "Total Arrests" && $("#state").val() != "United States" && arrCi[idx - 1] < 90 ) {
+                                //  retVal = "<strong>see notes</strong>";
+                                //  return retVal;
+                                // }
+
+
+                                if (item == "Forcible rape") {
+                                    return "Rape"
+                                }
+                               
+                                if (item == "Sex offense (except forcible rape and prostitution)") {
+                                    return "Sex offenses (except rape & prostitution)"
+                                }
+                                if (item == "Violent crimes*") {
+                                    return "Violent crimes***"
+                                } else {
+                                    return item;
+                                }                  
+                            }
+                             else  {                
+                                if(arr[0] == 'Forcible rape'){
+                                    return 'NA'
+                                }  
+                                if(arr[0] == 'Sex offense (except forcible rape and prostitution)'){
+                                    return 'NA'
+                                }
+                                if(arr[0] == 'Violent Crime Index'){
+                                    return 'NA'
+                                }
+                                retVal2 = (Math.round(item * 10)/10).toFixed(1);
+                                return retVal2;
+                            }
+
+
+                            })
+                        )
+                    );
+
+
+                    let notes = buildNotes(false);
+                    let dataSourceDynamic = buildDataSource(false);
+                   
+
+
+                    $("#QA11501Table").append( // Appends the citation to the bottom of the datable when results are returned
+                        // $('<tfoot/>').append('<tr><td colspan="2"><p>' + notes + '<hr/>' + citation + '<br><br>' + dataSource + '<hr/></p></td></tr>')
+                           $('<tfoot/>').append('<tr><td colspan="11"><p>' + notes + '<hr/>' + citation + '<br><br>' + dataSourceDynamic +'<hr/></p></td></tr>')
+                    );
+
+
+                    // $(".field__item p:eq(0)").html("Q: " + question);
+                    // $(".field__item p:eq(1)").html("<strong>A: " + qaAnswer + "</strong>");
+                    $("#testing123").html(question);
+                    $("#testing456").html("<strong>" + qaAnswer + "</strong>");
+
+
+                    $("#dataTitleLabel").html(qaTableTitle);
+                });
+
+
+            }
+
+
+//==========================================================================================================================
+            function buildColumnsArray(arrDisplayYears) {
+                let columns = [{'title':''}];
+                let jsonData = {};
+                for (i = parseInt(arrDisplayYears[0]); i <= parseInt(arrDisplayYears[1]); i++) {
+                    jsonData['title'] = i.toString();
+                    columns.push(jsonData);
+                    jsonData = {};
+                }
+                return columns;
+            }
+
+
+            function processResults() {
+                let query = "https://data.ojp.usdoj.gov/resource/2kr8-w367.json?";
+                query += "$select=offense,allraces,white,minority,black,americanindian,asian,rorminority,rorblack,roramericanindian,rorasian,qanotes,qatablenotes,yr,question,qaanswer,qadatasource,qadatayear,qatabletitle";
+               
+                query += "&$where=qapg='qa11501' and qadatayear='" + $("#year").val() + "'";
+                // query += "&$order= numrow";
+                QA11501.display = 'count';
+                let columns=[{'title':'Most serious offense'},{'title':'All races'},{'title':'White'},{'title':'Minority'},{'title':'Black'},{'title':'American Indian'},{'title':'Asian'},{'title':'Minority'},{'title':'Black'},{'title':'American Indian'},{'title':'Asian'}];
+                // let columns=[{},{},{},{},{},{},{},{},{},{},{}];
+                populateDataTable(query, columns);              
+
+
+            }
+//==========================================================================================================================
+
+
+            function loadDependencies(callback) {
+                loadjscssfile("https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js","js", "dtbuttons-js", function () {
+                        loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js","js", "jszip-js", function () {
+                        loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js","js", "pdfmake-js",function () {
+                        loadjscssfile("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js","js", "vfs_fonts", function () {
+                        loadjscssfile("https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js","js", "buttons_html5", function () {
+                        loadjscssfile("https://cdn.datatables.net/buttons/2.0.0/js/buttons.print.min.js","js", "buttons_print", callback);                      
+                    });                    
+                    });                    
+                    });                    
+                    });                    
+                    });
+            }
+
+
+
+
+            QA11501.searchSubmit = function () {
+
+
+                // loadDependencies(processResults);
+                processResults();
+
+
+            }
+
+
+            QA11501.setDisplay = function (chkBoxObject) {
+                QA11501.display = chkBoxObject.value;
+            }
+
+
+            QA11501.clearFilters = function () {
+                location.reload();
+            }
+
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }          
+
+
+            // Initializes the DataTable with default settings
+            function getExportHeader() {
+                return "Selected Year " + $("#year").val();
+
+
+            }
+
+
+            function getExportFooter() {
+                let notes = buildNotes(true);
+                let dataSourceDynamic = buildDataSource(true);
+                let footerNote = 'JAR is the juvenile arrest rate (per 100,000). ROR is the ratio of rates*.'
+                return '\r\n' + footerNote +  '\r\n' + '\r\n' + notes + '\r\n' + exportCitation + '\r\n' + dataSourceDynamic;
+            }
+
+
+            function setExportButtons() {
+                $(".dt-button").addClass("usa-button");
+                if (dtQA11501.columns().count() > 11) { // 10 appears to be the threshold for print and pdf export
+                //$(".buttons-pdf").prop("disabled",true);
+                    $(".buttons-pdf").off("click").on("click", function(e) {e.preventDefault()});
+                    $(".buttons-pdf").attr('title','PDF export has been disabled due to the number of columns requested. Please reduce the number of columns or use another export option.');
+                    $(".buttons-pdf").css('background-color','lightgrey');  
+                    $(".buttons-pdf").css('color','black');        
+                   
+                    $(".buttons-print").off("click").on("click", function(e) {e.preventDefault()});
+                    $(".buttons-print").attr('title','Printing has been disabled due to the number of columns requested.  Please reduce the number of columns or use another export option.');
+                    $(".buttons-print").css('background-color','lightgrey');    
+                    $(".buttons-print").css('color','black');                  
+                }
+            }
+
+
+            function initializeDataTablesSettings(customColumns) {
+                qaTableNotes = '';
+                qaNotes = '';
+                if ($.fn.dataTable.isDataTable('#QA11501Table')) {
+                    $('#QA11501Table').DataTable().clear();
+                    $('#QA11501Table').DataTable().destroy();
+                    $('#QA11501Table').empty();
+                    getData.offSet = undefined;  // necssary to set the static value to undefined so that the offset is valid during initial runs
+
+
+                }
+                dtQA11501 = $('#QA11501Table').DataTable({
+                    columns: customColumns,
+                    // 'rowCallback': function (row, data, index) {
+                    //  if (data[6] == "n/a" || data[7] == "n/a") { // col 6 and 7 are 2013 and 2014.
+                    //      $('td:gt(5)', row).css('background-color', 'Pink');
+                    //  }
+                    // },
+                    paging: false,
+                    lengthChange: false,
+                    autoWidth: true,
+                    responsive: true,
+                    order: [],
+                    // columnDefs: [
+                    //  {  
+                    //      'width': '2%',
+                    //      'targets': 0
+                    //  }
+                    // ],
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            messageTop: getExportHeader,
+                            messageBottom: getExportFooter,                        
+                        },
+                        'csv',
+                        {
+                            extend: 'excelHtml5',
+                            messageTop: getExportHeader,
+                            messageBottom: getExportFooter,
+                            exportOptions: {
+                                stripNewLines: false,
+                                format: {
+                                    header: function (data, columnIdx) {
+                                        if(columnIdx ==1){
+                                            return 'JAR - All races'
+                                        }
+                                        if(columnIdx ==2){
+                                            return 'JAR - White'
+                                        }
+                                        if(columnIdx ==3){
+                                            return 'JAR - Minority'
+                                        }
+                                        if(columnIdx ==4){
+                                            return 'JAR - Black'
+                                        }
+                                        if(columnIdx ==5){
+                                            return 'JAR - American Indian'
+                                        }
+                                        if(columnIdx ==6){
+                                            return 'JAR - Asian'
+                                        }
+                                        if(columnIdx ==7){
+                                            return 'ROR - White'
+                                        }
+                                        if(columnIdx ==8){
+                                            return 'ROR - Black'
+                                        }
+                                        if(columnIdx ==9){
+                                            return 'ROR - American Indian'
+                                        }
+                                        if(columnIdx ==10){
+                                            return 'ROR - Asian'
+                                        }
+                                        else{
+                                            return data;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {  
+                            extend: 'pdf',
+                            messageTop: getExportHeader,
+                            messageBottom: getExportFooter,
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            exportOptions: {
+                                stripNewLines: false,
+                                format: {
+                                    header: function (data, columnIdx) {
+                                        if(columnIdx ==1){
+                                            return 'JAR - All races'
+                                        }
+                                        if(columnIdx ==2){
+                                            return 'JAR - White'
+                                        }
+                                        if(columnIdx ==3){
+                                            return 'JAR - Minority'
+                                        }
+                                        if(columnIdx ==4){
+                                            return 'JAR - Black'
+                                        }
+                                        if(columnIdx ==5){
+                                            return 'JAR - American Indian'
+                                        }
+                                        if(columnIdx ==6){
+                                            return 'JAR - Asian'
+                                        }
+                                        if(columnIdx ==7){
+                                            return 'ROR - White'
+                                        }
+                                        if(columnIdx ==8){
+                                            return 'ROR - Black'
+                                        }
+                                        if(columnIdx ==9){
+                                            return 'ROR - American Indian'
+                                        }
+                                        if(columnIdx ==10){
+                                            return 'ROR - Asian'
+                                        }
+                                        else{
+                                            return data;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            messageTop: getExportHeader,
+                            messageBottom: getExportFooter,
+                            exportOptions: {
+                                stripNewLines: false,
+                                format: {
+                                    header: function (data, columnIdx) {
+                                        if(columnIdx ==1){
+                                            return 'JAR - All races'
+                                        }
+                                        if(columnIdx ==2){
+                                            return 'JAR - White'
+                                        }
+                                        if(columnIdx ==3){
+                                            return 'JAR - Minority'
+                                        }
+                                        if(columnIdx ==4){
+                                            return 'JAR - Black'
+                                        }
+                                        if(columnIdx ==5){
+                                            return 'JAR - American Indian'
+                                        }
+                                        if(columnIdx ==6){
+                                            return 'JAR - Asian'
+                                        }
+                                        if(columnIdx ==7){
+                                            return 'ROR - White'
+                                        }
+                                        if(columnIdx ==8){
+                                            return 'ROR - Black'
+                                        }
+                                        if(columnIdx ==9){
+                                            return 'ROR - American Indian'
+                                        }
+                                        if(columnIdx ==10){
+                                            return 'ROR - Asian'
+                                        }
+                                        else{
+                                            return data;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    oLanguage: {
+                        sSearch: "Keyword Search:"
+                    },
+                    dom: '<"top"p>Blrtip',
+                    bInfo: false,
+                });
+
+
+                // $('#QA11501Table').addClass("usa-table views-table views-view-table cols-8 sticky-enabled sticky-table");
+                $('#QA11501Table').addClass("usa-table views-table views-view-table cols-8");
+                $('#QA11501Table').css("width","100%");
+
+
+                const header = "<tr role='row'><th tabindex='0' aria-controls='QA11501Table' colspan='6' style='text-align:center;border-bottom:none;' >Juvenile arrest rate (per 100,000)</th><th  tabindex='0' aria-controls='QA11501Table' colspan='3' style='text-align:center !important;border-bottom:none;'>Ratio of Rates*</th></tr>"
+                $('#QA11501Table').find('thead').prepend(header);
+            }
+
+
+
+
+            function getData(qry, limit, increment, processData) {
+                if (typeof getData.offSet == 'undefined') {
+                    getData.offSet = 0
+                }
+
+
+                var url = '';
+                if (getData.offSet == 0)
+                    url = qry + "&$limit=" + limit;
+                else
+                    url = qry + "&$limit=" + limit + "&$offset=" + getData.offSet;
+
+
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    async: true,
+                    data: {
+                        "$$app_token": "Xd0jQDzoPOATVFd2mXa3xe4LO"
+                    },
+
+
+                    success: function (data) {
+                        // $("#loaderGif").css("visibility", "visible");
+                        // $("#loaderGif").show();
+
+
+                        processData(data);
+
+
+                        dtQA11501.draw();
+                        $('#QA11501Table').DataTable().responsive.recalc();
+                       
+                        getData.offSet += increment;
+                        if (data.length == increment) //if (data.length > 0)
+                            getData(qry, limit, increment, processData);
+                        else {
+                            $("#loaderGif").hide();
+                            $("#loaderGif").css("visibility", "hidden");
+
+
+                            setExportButtons();
+                        }
+                    }
+                });
+            };
+
+
+            $('#keywordsearch').on('keyup', function () {
+                //var regExSearch = '^\\s' + this.value + '\\s*$';
+                //dtQA11501.search(this.value).draw();
+                dtQA11501.search(this.value).draw();
+            });
+            //$(".container").css("visibility","visible");
+            // QA11501.buildStateSelectObject();
+            // initializeDataTablesSettings();
+            loadDependencies(processResults);
+        })(jQuery, QA11501);
+    });
+</script>
+<!-- <div class="container" style="padding-left: 0px;padding-right:0px; visibility:hidden" > -->
+<div class="container" style="padding-left: 0px;padding-right:0px;">
+    <div class="cta">
+        <div class="views-exposed-form usa-accordion" data-drupal-selector="views-exposed-form-awards-awards-list-block"
+            aria-label="accordion-group">
+            <h2 class="usa-accordion__heading">
+                <button class="usa-accordion__button" aria-expanded="true" aria-controls="-1" type="button">
+                    Use Search Filters
+                </button>
+            </h2>
+            <div id="-1" class="usa-accordion__content usa-prose ui-widget-content" hidden="">
+                <div class="form--inline clearfix">
+                    <div class="ojp-filter-section">
+                        <!-- <div><strong>Note: Use the checkboxes below to limit your query to a specific year (or years).
+                            Unless specified, queries that do not use Year in the display, such as a table of Age by Sex, will default to the current data year.</strong></div> -->
+                        <div class="ojp-filter-section__filters">
+                            <div class="usa-form-group js-form-item form-item js-form-type-select">
+                                <label for="year" class="usa-label">Year</label>
+                                <select class="form-select usa-select" name="year" id="year">
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                    <!-- <option value="2014">2014</option>
+                                    <option value="2013">2013</option>
+                                    <option value="2012">2012</option>
+                                    <option value="2011">2011</option>
+                                    <option value="2010">2010</option>
+                                    <option value="2009">2009</option>
+                                    <option value="2008">2008</option>
+                                    <option value="2007">2007</option>
+                                    <option value="2006">2006</option>
+                                    <option value="2005">2005</option>
+                                    <option value="2003">2003</option> -->
+                                </select>
+                            </div>
+                            <!-- <div class="usa-form-group js-form-item form-item js-form-type-select">
+                                <label for="state" class="usa-label">Jurisdiction</label>
+                                <select class="form-select usa-select" name="state" id="state">
+                                   
+                                </select>
+                            </div> -->
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="usa-form-group js-form-item form-item js-form-type-button">
+                    <!-- <button
+                        class="usa-button--secondary button s-form-submit form-submit usa-button usa-input"
+                        style="float:right;" onclick="QA11501.clearFilters()">Clear Filters</button> -->
+                    <button
+                        class="usa-button--secondary button s-form-submit form-submit usa-button usa-input"
+                        style="float:right;" onclick="QA11501.searchSubmit()">Search Submit</button>
+                </div>              
+            </div>
+        </div>
+    </div>
+    <div id="resize_wrapper" class="container-fluid" style="padding-top: 4px;padding-left: 0px;padding-right:0px">
+        <div id="loaderGif" style="text-align:center; visibility:hidden">
+            <p style="text-align:center"><strong>Loading Data. Please wait...</strong></p>
+            <img height="70px" width="70px" src="/sites/g/files/xyckuh226/files/images/2021-02/ajax-loader.gif"
+                alt="Processing..." />
+        </div>
+        <br>
+        <span style="width: 100%; text-align: center; visibility:hidden" id="dataTitle"><h3 id="dataTitleLabel"></h3></span>
+        <!-- <table id="QA11501Table"  class="usa-table views-table views-view-table cols-8 sticky-enabled sticky-table" style="width:100%;"> -->
+        <table id="QA11501Table"  class="usa-table views-table views-view-table cols-8" style="width:100%;"></table>
+            <!-- <thead>
+                <tr>
+                    <th></th>
+                    <th colspan="6">Juvenile arrest rate (per 100,000)</th>
+                    <th colspan="4">Ratio of Rates*</th>
+                </tr>
+                <tr>
+                    <th>Most serious offense</th>
+                    <th> All races</th>
+                    <th>White</th>
+                    <th>Minority</th>
+                    <th>Black</th>
+                    <th>American<br>Indian</th>
+                    <th>Asian</th>
+                    <th>Minority</th>
+                    <th>Black</th>
+                    <th>American<br>Indian</th>
+                    <th>Asian</th>
+                </tr>
+            </thead> -->
+
+
+        </table>
+    </div>
+</div>
+
