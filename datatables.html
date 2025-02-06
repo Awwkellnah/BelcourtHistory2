@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belcourt Movie Database</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables Bootstrap 5 integration -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- Bootstrap Icons for the dropdown icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Moment.js for proper date parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/datetime-moment.js"></script>
+
+    <style>
+        td.details-control {
+            cursor: pointer;
+            text-align: center;
+        }
+        .movie-poster {
+            max-width: 100px;
+            max-height: 150px;
+            object-fit: cover;
+        }
+        .bold-title {
+            font-weight: bold;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .category-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .category-film { background-color: #0dcaf0; }
+        .category-play { background-color: orange; }
+        .category-concert { background-color: green; }
+        .category-performance { background-color: green; }
+        .category-other { background-color: red; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Belcourt Movie Database</h1>
+        <h6><i>An evolving list of <b>Films, Plays</b> and <b>Performances</b> that have occurred at the Belcourt Theatre</i></h6>
+        <div ><span class="category-dot category-film"></span> Film |  <span class="category-dot category-play"></span> Play  |  <span class="category-dot category-concert"></span> Concert
+        <hr>
+        <div class="mb-3">
+            <button class="btn btn-primary filter-btn" data-category="">Show All</button>
+            <button class="btn btn-info filter-btn" data-category="Film">Film</button>
+            <button class="btn btn-warning filter-btn" data-category="Play">Play</button>
+            <button class="btn btn-success filter-btn" data-category="Concert">Concert</button>
+            <!-- <button class="btn btn-danger filter-btn" data-category="Other">Other</button> -->
+        </div>
+        
+        <div class="table-responsive">
+            <table id="movies" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <!-- <th>Year</th> -->
+                        <th class="bold-title">Title</th>
+                        <th>Opened</th>
+                        <th>Cat.</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <hr>
+        <div style="text-align: right;">
+            <div><i>Last updated: 2/3/25</i></div>
+            <div>Built and maintained by Jon Keller</div>
+        </div>
+        
+        
+    </div>
+
+    <script>
+        $(document).ready(function() {
+    $.getJSON("movies99.json", function(data) {
+        let cleanData = data.map(row => ({
+            "Year": row.Year || "Unknown",
+            "Title": row["Title"] || "No Title",
+            "IMDb Year": row["IMDb Year"] || "",
+            "IMDb Title": row["IMDb Title"] || "No Title",
+            "IMDb URL": row["IMDb URL"] || "#",
+            "Opening Date": row["Opening Date"] || "",
+            "Runtime": row["Runtime"] || "Unknown",
+            "Country": row["Country"] || "N/A",
+            "Director": row["Director"] || "Unknown",
+            "Cast": row["Cast"] ? row["Cast"].split(",").slice(0, 4).join(", ") : "N/A",
+            "Genre": row["Genre"] || "Unknown",
+            "Plot Outline": row["Plot Outline"] || "No Description",
+            "Closing Date": row["Closing Date"] || "N/A",
+            "Days Played": row["Days Played"] || "0",
+            "Season": row["Season"] || "N/A",
+            "Series": row["Series"] || "N/A",
+            "Company": row["Company"] || "Unknown",
+            "Category": row["Category"] || "Other",
+            "Poster URL": row["Poster URL"] || "",
+            "Notes": row["Notes"] || "",
+        }));
+
+        $.fn.dataTable.moment('YYYY-MM-DD');
+
+        var table = $('#movies').DataTable({
+            data: cleanData,
+            columns: [
+                {
+                    className: 'details-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: '<i class="bi bi-chevron-right"></i>',
+                },
+                // { data: "Year" },
+                { 
+                    data: "IMDb Title", 
+                    className: "bold-title",
+                    render: function(data, type, row) {
+                        let title = data || row["Title"];
+                        return (data === "N/A" || data === "No Title") 
+                            ? row["Title"] 
+                            : `<a href="${row["IMDb URL"]}" target="_blank">${title}</a>`;
+                    }
+                },
+                { 
+                    data: "Opening Date",
+                    render: function(data, type, row) {
+                        if (type === "display" || type === "filter") {
+                            return data ? moment(data, "YYYY-MM-DD").format("MM/DD/YYYY") : "";
+                        }
+                        return data;
+                    }
+                },
+                {
+                    data: "Category",
+                    render: function(data) {
+                        let dotClass = "category-other";
+                        if (data === "Film" || data === "Silent Film" || data === "Silent") {
+                            dotClass = "category-film";
+                        } else if (data === "Play") {
+                            dotClass = "category-play";
+                        } else if (data === "Concert" || data === "Performance") {
+                            dotClass = "category-concert";
+                        } 
+                        else if (data === "Ballet" || data === "Event" || data === "Conference") {
+                            dotClass = "category-other"
+                        }
+                        return `<span class="category-dot ${dotClass}"></span> ${data}`;
+                    }
+                },
+                { data: "Director", visible: false },
+                { data: "Cast", visible: false },
+                { data: "Country", visible: false },
+                { data: "Genre", visible: false },
+                { data: "Company", visible: false },
+                { data: "Series", visible: false }
+            ],
+            order: [[2, 'asc']],
+            pageLength: 25,
+            responsive: true
+        });
+
+        // Filter button event
+        $(".filter-btn").on("click", function() {
+            var category = $(this).data("category");
+
+            if (category === "Film") {
+                // Filter for both "Film" and "Silent" entries
+                table.column(3).search("Film|Silent", true, false).draw();
+            } else if (category) {
+                // Filter for the selected category (other than "Film")
+                table.column(3).search(category).draw();
+            } else {
+                // Show all entries when "Show All" is clicked
+                table.column(3).search("").draw();
+            }
+        });
+
+        $('#movies tbody').on('click', 'td.details-control', function() {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+            var icon = $(this).find('i');
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+                icon.removeClass('bi-chevron-down').addClass('bi-chevron-right');
+            } else {
+                row.child(formatDetails(row.data())).show();
+                tr.addClass('shown');
+                icon.removeClass('bi-chevron-right').addClass('bi-chevron-down');
+            }
+        });
+
+        function formatDetails(d) {
+    let filmInfoHtml = `
+        <div class="table-responsive">
+            <table class="table table-sm" style="width:100%; padding-left:50px;">
+                <thead><tr><th colspan="2" class="text-center"><strong>Film Info</strong></th></tr></thead>
+                <tbody>`;
+    
+    // Only add the row if the field is not empty or contains "Unknown", "N/A", etc.
+    if (d["IMDb Title"] && d["IMDb Title"] !== "No Title" && d["IMDb Title"] !== "N/A") {
+        filmInfoHtml += `<tr><td><strong>IMDb Title:</strong></td><td>${d["IMDb Title"]} (${d["IMDb Year"]})</td></tr>`;
+    }
+    if (d["Director"] && d["Director"] !== "Unknown") {
+        filmInfoHtml += `<tr><td><strong>Director:</strong></td><td>${d["Director"]}</td></tr>`;
+    }
+    if (d["Cast"] && d["Cast"] !== "N/A") {
+        filmInfoHtml += `<tr><td><strong>Top Cast:</strong></td><td>${d["Cast"].split(",").slice(0, 4).join(", ")}</td></tr>`;
+    }
+    if (d["Country"] && d["Country"] !== "N/A") {
+        filmInfoHtml += `<tr><td><strong>Country:</strong></td><td>${d["Country"]}</td></tr>`;
+    }
+    if (d["Genre"] && d["Genre"] !== "Unknown") {
+        filmInfoHtml += `<tr><td><strong>Genre:</strong></td><td>${d["Genre"]}</td></tr>`;
+    }
+    if (d["Runtime"] && d["Runtime"] !== "Unknown") {
+        filmInfoHtml += `<tr><td><strong>Runtime:</strong></td><td>${d["Runtime"]} min</td></tr>`;
+    }
+    if (d["Plot Outline"] && d["Plot Outline"] !== "No Description") {
+        filmInfoHtml += `<tr><td><strong>Plot Outline:</strong></td><td>${d["Plot Outline"]}</td></tr>`;
+    }
+    if (d["Poster URL"] && d["Poster URL"] !== "") {
+        filmInfoHtml += `<tr><td><strong>Poster:</strong></td><td><img src="${d["Poster URL"]}" class="movie-poster" alt="Poster"></td></tr>`;
+    }
+    
+    // Close the Film Info table body
+    filmInfoHtml += `</tbody></table></div>`;
+
+    let filmTitle =  d["IMDbTitle"] || d["Title"];
+
+    // Now, the Belcourt Info section
+    let belcourtInfoHtml = `
+        <div class="table-responsive">
+            <table class="table table-sm" style="width:100%; padding-left:50px;">
+                <thead><tr><th colspan="2" class="text-center"><strong>Belcourt Info</strong></th></tr></thead>
+                <tbody>
+                    <tr><tr><td><strong>Title:</strong></td><td><strong>${filmTitle}</strong></td></tr>
+                    <tr><td><strong>Opening Date:</strong></td><td>${d["Opening Date"] ? moment(d["Opening Date"], "YYYY-MM-DD").format("YYYY-MM-DD") : "N/A"}</td></tr>
+                    <tr><td><strong>Closing Date:</strong></td><td>${d["Closing Date"]}</td></tr>
+                    <tr><td><strong>Days Played:</strong></td><td>${d["Days Played"]}</td></tr>
+                    <tr><td><strong>Series:</strong></td><td>${d["Series"] || "N/A"}</td></tr>
+                    <tr><td><strong>Company:</strong></td><td>${d["Company"]}</td></tr>
+                    <tr><td><strong>Category:</strong></td><td>${d["Category"]}</td></tr>
+                                        <tr><td><strong>Notes:</strong></td><td>${d["Notes"]}</td></tr>
+
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    // Combine both the Film Info and Belcourt Info sections
+    return `${belcourtInfoHtml}${filmInfoHtml}`;
+}
+    }).fail(function() {
+        console.error("Failed to load movies.json. Check file path and server.");
+    });
+});
+
+    </script>
+</body>
+</html>
