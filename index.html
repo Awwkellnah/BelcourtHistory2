@@ -76,8 +76,8 @@
         </div>
         <hr>
         <div style="text-align: right;">
-            <div><i>Last updated: 2/6/25</i></div>
-           
+            <div><i>Last updated: 2/3/25</i></div>
+            <!-- <div>Built and maintained by Jon Keller</div> -->
         </div>
         
         
@@ -85,7 +85,7 @@
 
     <script>
         $(document).ready(function() {
-    $.getJSON("movies99.json", function(data) {
+    $.getJSON("CleanMoviesList.json", function(data) {
         let cleanData = data.map(row => ({
             "Year": row.Year || "Unknown",
             "Title": row["Title"] || "No Title",
@@ -122,13 +122,10 @@
                 },
                 // { data: "Year" },
                 { 
-                    data: "IMDb Title", 
+                   data: "Title",
                     className: "bold-title",
-                    render: function(data, type, row) {
-                        let title = data || row["Title"];
-                        return (data === "N/A" || data === "No Title") 
-                            ? row["Title"] 
-                            : `<a href="${row["IMDb URL"]}" target="_blank">${title}</a>`;
+                    render: function(data) {
+                        return `<span style="color: black;">${data}</span>`;
                     }
                 },
                 { 
@@ -210,7 +207,7 @@
     
     // Only add the row if the field is not empty or contains "Unknown", "N/A", etc.
     if (d["IMDb Title"] && d["IMDb Title"] !== "No Title" && d["IMDb Title"] !== "N/A") {
-        filmInfoHtml += `<tr><td><strong>IMDb Title:</strong></td><td>${d["IMDb Title"]} (${d["IMDb Year"]})</td></tr>`;
+    filmInfoHtml += `<tr><td><strong>IMDb Title:</strong></td><td><a href="${d["IMDb URL"]}" target="_blank">${d["IMDb Title"]} (${d["IMDb Year"]})</a></td></tr>`;
     }
     if (d["Director"] && d["Director"] !== "Unknown") {
         filmInfoHtml += `<tr><td><strong>Director:</strong></td><td>${d["Director"]}</td></tr>`;
