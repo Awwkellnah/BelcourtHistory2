@@ -56,11 +56,15 @@
             color:#0081b9
         }
 
-        .category-film { background-color: #0dcaf0; }
+        .category-film { 
+            background-color: #0dcaf0; 
+            padding-bottom: 10px;
+        }
         .category-play { background-color: orange; }
         .category-concert { background-color: green; }
         .category-performance { background-color: green; }
         .category-other { background-color: red; }
+        .category-silent { background-color: darkslategrey;}
 
         .card-film {
     background-color: #e3f7fc;
@@ -74,20 +78,145 @@
 .card-other {
     background-color: #f8f9fa;
 }
+
+:root, [data-bs-theme=light] {
+--bs-blue: #0081b9 !important;
+--bs-primary: #0081b9;
+--bs-primary-text: #0081b9;
+--bs-secondary-text: #6c757d;
+--bs-link-color: #0081b9;
+--bs-link-color-rgb: 13,110,253;
+--bs-link-decoration: underline;
+--bs-link-hover-color: #0081b9;
+--bs-pagination-active-bg: #0081b9 !important;
+--bs-pagination-active-border-color: #0081b9 !important;  
+}
+.pagination{
+    --bs-pagination-active-bg: #0081b9 !important;
+--bs-pagination-active-border-color: #0081b9 !important;  
+}
+.btn-clear {
+    background-color: transparent;
+    color: black;
+    border: 1px solid black; /* optional, for visibility */
+}
+
+.btn-outline-primary {
+    color: #0081b9;
+    border-color: #0081b9;
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary:focus-visible,
+.btn-outline-primary:visited,
+.btn-outline-primary:checked,
+.btn-outline-primary.show {
+    color: #fff;
+    background-color: #0081b9 !important;
+    border-color: #0081b9;
+    box-shadow: none;
+}
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+    box-shadow: none !important;
+}
+
+.btn-primary {
+    background-color: #0081b9 !important;
+    border-color: #0081b9;
+    color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:focus-visible,
+.btn-primary.show {
+    background-color: #0081b9; /* optional darker shade on hover */
+    border-color: #0081b9;
+    color: #fff;
+    box-shadow: none;
+}
+.category-col {
+    min-width: 100px; /* adjust as needed */
+    white-space: nowrap;
+}
+.filter-btn {
+  margin: 2px; /* adds spacing on top/bottom and left/right */
+}
+.btn-primary {
+    margin: 4px 1px;
+}
+
+.btn-secondary {
+    margin: 4px 1px;
+}
+
+
     </style>
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Belcourt Movie Database</h1>
-    <h6><i>An evolving list of <b>Films, Plays</b> and <b>Performances</b> that have occurred at the Belcourt Theatre</i></h6>
-    <div><span class="category-dot category-film"></span> Film | <span class="category-dot category-play"></span> Play | <span class="category-dot category-concert"></span> Concert
+    <h1 class="mb-2" style="color: #0081b9">Belcourt Movie Database</h1>
+    <h6 style="color: #6c757d;"><i>An ongoing record of the <b>Films, Plays</b> and <b>Performances</b> that have occurred at the Belcourt Theatre in Nashville, Tennessee.</i></h6>
+        <h6 style="color: #6c757d;"><i>* * Now Searchable * *</i></h6>
+
+    <!-- <div><span class="category-dot category-film"></span> Film | <span class="category-dot category-play"></span> Play | <span class="category-dot category-concert"></span> Concert -->
     <hr>
-    <div class="mb-3">
-        <button class="btn btn-primary filter-btn" data-category="">Show All</button>
-        <button class="btn btn-info filter-btn" data-category="Film">Film</button>
-        <button class="btn btn-warning filter-btn" data-category="Play">Play</button>
-        <button class="btn btn-success filter-btn" data-category="Concert">Concert</button>
+    
+    
+<!-- Filter Toggle Button -->
+<div class="mb-3">
+    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection" aria-expanded="false" aria-controls="filterSection">
+        Toggle Filters
+    </button>
+</div>
+
+<!-- Collapsible Filter Section -->
+<div class="collapse mb-4" id="filterSection">
+    <div class="card card-body border rounded shadow-sm">
+        <div class="mb-3">
+            <label for="customSearch" class="form-label"><strong>Search by Title, Director, Series, etc... </strong> </label>
+            <input type="text" id="customSearch" class="form-control" placeholder="Type to search...">
+        </div>
+        <!-- Category Buttons -->
+         <label class="mb-2" for="category"><strong>Filter by Category</strong></label>
+        <div class="mb-3">
+            <button class="btn btn-info filter-btn" data-category="Film">Film</button>
+            <button class="btn btn-warning filter-btn" data-category="Play">Play</button>
+            <button class="btn btn-success filter-btn" data-category="Concert">Concert</button>
+            <button class="btn btn-secondary filter-btn" data-category="Silent">Silent Film</button>
+            <button class="btn btn-clear filter-btn" data-category="">Clear Category</button>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="row">
+            <div class="mb-1"><strong>Filter by Year</strong></div>
+            <div class="col-md-3">
+                <label for="startYear" class="form-label">Start Year</label>
+                <select id="startYear" class="form-control">
+                    <option value="">Any</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="endYear" class="form-label">End Year</label>
+                <select id="endYear" class="form-control">
+                    <option value="">Any</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button id="applyDateFilter" class="btn btn-primary">Apply</button>
+                <button id="clearDateFilter" class="btn btn-secondary">Clear</button>
+            </div>
+        </div>
     </div>
+</div>
+
+
 
     <div class="table-responsive">
         <table id="movies" class="table table-striped table-bordered" style="width:100%">
@@ -96,19 +225,50 @@
                 <th></th>
                 <th class="bold-title">Title</th>
                 <th>Opened</th>
-                <th>Cat.</th>
+                <th class="bold-title category-col">Cat.</th>
+
             </tr>
             </thead>
         </table>
     </div>
     <hr>
+    <p><strong>Note:</strong> There are some instances of film information in the dropdown sections not matching the correct film title. There are over 7,000 film entries and it can be difficult to match them all to the correct IMDb entry. If you see any errors or would like to make a suggestions, please contact me at <a href="mailto:keller@belcourt.org"> keller@belcourt.org<a>. Thank you! </p>
     <div style="text-align: right;">
-        <div><i>Last updated: 2/3/25</i></div>
+        <div><i>Last updated: 6/2/25</i></div>
+        <div><i>Last data refreshed: 2/3/25</i></div>
+
     </div>
 </div>
 
 <script>
 $(document).ready(function() {
+   $('#applyDateFilter').on('click', function() {
+    table.draw();
+    let filterCollapse = bootstrap.Collapse.getOrCreateInstance(document.getElementById('filterSection'));
+    filterCollapse.hide();
+});
+
+// Delayed search: Debounce input
+let searchTimeout;
+
+$('#customSearch').on('keyup', function () {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function () {
+        table.draw(); // triggers the custom search logic
+    }, 300);
+});
+
+$('#clearDateFilter').on('click', function () {
+    $('#startYear').val('');
+    $('#endYear').val('');
+    $('#customSearch').val('');
+    table.search('').draw();
+    table.draw();
+});
+
+
+
+ let table;
     $.getJSON("CleanMoviesList.json", function(data) {
         let cleanData = data.map(row => ({
             "Year": row.Year || "Unknown",
@@ -134,9 +294,23 @@ $(document).ready(function() {
             "Notes": row["Notes"] || ""
         }));
 
+        const years = [...new Set(cleanData
+            .map(d => moment(d["Opening Date"], "YYYY-MM-DD").isValid() 
+                    ? moment(d["Opening Date"]).year() 
+                    : null)
+            .filter(y => y !== null)
+        )].sort((a, b) => a - b);
+
+        years.forEach(year => {
+            $('#startYear, #endYear').append(`<option value="${year}">${year}</option>`);
+        });
+
         $.fn.dataTable.moment('YYYY-MM-DD');
 
-        var table = $('#movies').DataTable({
+        table = $('#movies').DataTable({
+           
+             dom: 'lrtip', // 'l' = length dropdown, 'r' = processing display, 't' = table, 'i' = info, 'p' = pagination
+
             data: cleanData,
             columns: [
                 {
@@ -165,7 +339,7 @@ $(document).ready(function() {
                     data: "Category",
                     render: function(data) {
                         let dotClass = "category-other";
-                        if (data === "Film" || data === "Silent Film" || data === "Silent") {
+                        if (data === "Film" ) {
                             dotClass = "category-film";
                         } else if (data === "Play") {
                             dotClass = "category-play";
@@ -173,6 +347,8 @@ $(document).ready(function() {
                             dotClass = "category-concert";
                         } else if (data === "Ballet" || data === "Event" || data === "Conference") {
                             dotClass = "category-other";
+                        } else if (data === "Silent") {
+                            dotClass = 'category-silent';
                         }
                         return `<span class="category-dot ${dotClass}"></span> ${data}`;
                     }
@@ -180,13 +356,71 @@ $(document).ready(function() {
             ],
             order: [[2, 'asc']],
             pageLength: 25,
-            responsive: true
+            responsive: true,
+            pagingType: "simple_numbers", // or "full_numbers", "simple", etc.
+            language: {
+                paginate: {
+                    previous: "Prev",
+                    next: "Next"
+                }
+            },
+           
+       
+
+
         });
+
+        
+
+       $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+    const query = $('#customSearch').val().toLowerCase();
+    if (!query) return true;
+
+    const rowData = table.row(dataIndex).data(); // ✅ Get actual row data here
+
+    const fieldsToSearch = [
+        rowData["Title"],
+        rowData["IMDb Title"],
+        rowData["Director"],
+        rowData["Cast"],
+        rowData["Country"],
+        rowData["Company"],
+        rowData["Series"],
+        rowData["Category"],
+        rowData["Notes"]
+    ];
+
+    return fieldsToSearch.some(field =>
+        String(field || '').toLowerCase().includes(query)
+    );
+});
+
+
+
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            const minYear = parseInt($('#startYear').val(), 10);
+            const maxYear = parseInt($('#endYear').val(), 10);
+            const openingDate = data[2]; // Column index for "Opening Date"
+
+            if (!openingDate) return false;
+
+            const year = moment(openingDate, "MM/DD/YYYY").year();
+
+            if (
+                (isNaN(minYear) || year >= minYear) &&
+                (isNaN(maxYear) || year <= maxYear)
+            ) {
+                return true;
+            }
+            return false;
+        });
+
+
 
         $(".filter-btn").on("click", function() {
             var category = $(this).data("category");
             if (category === "Film") {
-                table.column(3).search("Film|Silent", true, false).draw();
+                table.column(3).search("Film", true, false).draw();
             } else if (category) {
                 table.column(3).search(category).draw();
             } else {
@@ -218,14 +452,25 @@ $(document).ready(function() {
     
 
     const titleLine = `<h4 >${d["Title"]}</h4>`;
+    const verb = (d["Category"] === "Film" || d["Category"] === "Silent Film" || d["Category"] === "Silent") ? "Played" : "Performed";
+    
+    const openDate = d["Opening Date"] ? moment(d["Opening Date"], "YYYY-MM-DD") : null;
+    const closeDate = d["Closing Date"] && d["Closing Date"] !== "N/A" ? moment(d["Closing Date"], "YYYY-MM-DD") : null;
 
-    const playedLine = `Played at the ${d["Company"]} from ${d["Opening Date"] ? moment(d["Opening Date"], "YYYY-MM-DD").format("MMMM D, YYYY") : "N/A"} to ${d["Closing Date"] ? moment(d["Closing Date"], "YYYY-MM-DD").format("MMMM D, YYYY") : "N/A"}.`;
+    let playedLine = "";
+    if (!closeDate || (openDate && openDate.isSame(closeDate))) {
+        playedLine = `${verb} at the ${d["Company"]} on ${openDate ? openDate.format("MMMM D, YYYY") : "N/A"}.`;
+    } else {
+        playedLine = `${verb} at the ${d["Company"]} from ${openDate ? openDate.format("MMMM D, YYYY") : "N/A"} to ${closeDate.format("MMMM D, YYYY")}.`;
+    }
+
+    // const playedLine = `${verb} at the ${d["Company"]} from ${d["Opening Date"] ? moment(d["Opening Date"], "YYYY-MM-DD").format("MMMM D, YYYY") : "N/A"} to ${d["Closing Date"] ? moment(d["Closing Date"], "YYYY-MM-DD").format("MMMM D, YYYY") : "N/A"}.`;
 
     const seriesLine = d["Series"] && d["Series"] !== "N/A" ? `<p class="mb-1"><strong>Series:</strong> ${d["Series"]}</p>` : "";
     const notesLine = d["Notes"] ? `<p class="mb-2"><strong>Notes:</strong> ${d["Notes"]}</p>` : "";
 
     const infoLine = [
-        d["Director"] !== "Unknown" ? `Dir. ${d["Director"]}` : "",
+        d["Director"] !== "Unknown" ? `<strong>Details: </strong>Dir. ${d["Director"]}` : "",
         d["Country"] !== "N/A" ? d["Country"] : "",
         d["IMDb Year"] || "",
         d["Runtime"] !== "Unknown" ? `${d["Runtime"]} min` : "",
@@ -269,6 +514,9 @@ $(document).ready(function() {
         console.error("Failed to load movies.json. Check file path and server.");
     });
 });
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
